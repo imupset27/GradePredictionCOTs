@@ -1,4 +1,4 @@
-Package: shinyAppDemo
+Package: GPred19
 Type: Package
 Title: Implements a demo shiny application inside a package
 Version: 0.1.0

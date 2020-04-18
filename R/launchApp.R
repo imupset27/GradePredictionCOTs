@@ -1,4 +1,4 @@
-#' launches the shinyAppDemo app
+#' launches the GPred19 app
 #'
 #' @export launchApp
 #'

@@ -1,1 +1,1 @@
-shinyAppDemo::launchApp()
+Gpred19::launchApp()

@@ -2,7 +2,7 @@
 % Please edit documentation in R/launchApp.R
 \name{launchApp}
 \alias{launchApp}
-\title{launches the shinyAppDemo app}
+\title{launches the Gpred19 app}
 \usage{
 launchApp()
 }
@@ -10,5 +10,5 @@ launchApp()
 shiny application object
 }
 \description{
-launches the shinyAppDemo app
+launches the Gpred19 app
 }

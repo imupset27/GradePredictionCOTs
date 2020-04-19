@@ -11,6 +11,7 @@
 
 
 # wrapper for shiny::shinyApp()
-launchApp <- function() {
-  shinyApp(ui = shinyAppUI, server = shinyAppServer, options = list(host="192.168.100.3", port=627))
+launchApp <- function(x,y) {
+  shinyApp(ui = shinyAppUI, server = shinyAppServer, options = list(host=x, port=y))
 }
+

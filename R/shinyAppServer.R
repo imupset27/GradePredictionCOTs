@@ -76,10 +76,7 @@ shinyAppServer <- function(input, output) {
     )
   })
 
-  summary <- reactive({
-    regressor <- regressor()
-    base::summary(regressor)
-  })
+
 
   error <- reactive({
     regressor <- regressor()
@@ -101,6 +98,12 @@ shinyAppServer <- function(input, output) {
                      'Actual' = test_set[,ncol(test_set)],
                      'Predicted' = drop(predicted))
   })
+
+  RMSEPr <- reactive({
+
+    y = data.frame('RMSEP'=sqrt(mean((predicted_test_set()$Actual - predicted_test_set()$Predicted)^2)))
+  })
+
   #Data Pre-Processing for the current data####
   newdata <- reactive({
     file1 <- input$uploadedfile
@@ -192,6 +195,9 @@ shinyAppServer <- function(input, output) {
     }
   )
 
+  output$summary <- renderPrint({
+    summary(regressor())
+  })
 
   # dataset106 <- reactive({
   #   dataset <- dataset()
@@ -215,8 +221,89 @@ shinyAppServer <- function(input, output) {
     predicted_test_set()
   })
 
-  output$plots <- renderPlot({
-    par(mfrow=c(2,2))
+  output$RMSEPrediction <- renderTable({
+    if(is.null(dataset())){return()}
+    RMSEPr()
+  })
+  # output$plots <- renderPlot({
+  #   par(mfrow=c(2,2))
+  #   plot(
+  #     RMSEP(
+  #       regressor(),
+  #       estimate =c("train", "CV", "test"),
+  #       newdata = test_set()
+  #     ),
+  #     lwd = 1.2,
+  #     legendpos = "topright",
+  #     main = "Error of Training, Cross-Validation and Test Sets",
+  #     ylab = "Root Mean Squared Error"
+  #   )
+  #   plot(
+  #     R2(
+  #       regressor(),
+  #       estimate =c("train", "CV", "test"),
+  #       newdata = test_set()
+  #     ),
+  #     lwd=1.2,
+  #     legendpos = "bottomright",
+  #     main = "R-square of Training, Cross-Validation and Test Sets",
+  #     ylab = "R-square"
+  #   )
+  #   selectNcomp(regressor(),
+  #               method = "randomization",
+  #               plot = TRUE,
+  #               main = "Optimum Number of Components",
+  #               lwd = 1.2)
+  #   plot(test_set()$Total,predicted_test_set()$Predicted,
+  #        #xlim = c(0,100),
+  #        #ylim = c(0,100),
+  #        main = "Test Set Total Marks",
+  #        ylab = "Predicted Mark",
+  #        xlab = "Actual Mark",
+  #        lwd = 1.2)
+  # })
+
+  # output$plots <- renderPlot({
+  #   par(mfrow=c(2,2))
+  #   plot(
+  #     RMSEP(
+  #       regressor(),
+  #       estimate =c("train", "CV", "test"),
+  #       newdata = test_set()
+  #     ),
+  #     lwd = 1.2,
+  #     legendpos = "topright",
+  #     main = "Error of Training, Cross-Validation and Test Sets",
+  #     ylab = "Root Mean Squared Error"
+  #   )
+  #   plot(
+  #     R2(
+  #       regressor(),
+  #       estimate =c("train", "CV", "test"),
+  #       newdata = test_set()
+  #     ),
+  #     lwd=1.2,
+  #     legendpos = "bottomright",
+  #     main = "R-square of Training, Cross-Validation and Test Sets",
+  #     ylab = "R-square"
+  #   )
+  #   selectNcomp(regressor(),
+  #               method = "randomization",
+  #               plot = TRUE,
+  #               main = "Optimum Number of Components",
+  #               lwd = 1.2)
+  #   plot(test_set()$Total,predicted_test_set()$Predicted,
+  #        #xlim = c(0,100),
+  #        #ylim = c(0,100),
+  #        main = "Test Set Total Marks",
+  #        ylab = "Predicted Mark",
+  #        xlab = "Actual Mark",
+  #        lwd = 1.2)
+  #
+  #
+  #   })
+
+  output$error_plot <- renderPlot({
     plot(
       RMSEP(
         regressor(),
@@ -225,9 +312,12 @@ shinyAppServer <- function(input, output) {
       ),
       lwd = 1.2,
       legendpos = "topright",
-      main = "Total Marks",
+      main = "Error of Training, Cross-Validation and Test Sets",
       ylab = "Root Mean Squared Error"
     )
+  })
+
+  output$rsquare_plot <- renderPlot({
     plot(
       R2(
         regressor(),
@@ -236,69 +326,76 @@ shinyAppServer <- function(input, output) {
       ),
       lwd=1.2,
       legendpos = "bottomright",
-      main = "Total Marks",
-      ylab = "R-squared"
+      main = "R-square of Training, Cross-Validation and Test Sets",
+      ylab = "R-square"
     )
+  })
+
+  output$ncomp_plot <- renderPlot({
     selectNcomp(regressor(),
                 method = "randomization",
                 plot = TRUE,
-                main = "Total Marks",
+                main = "Optimum Number of Components",
                 lwd = 1.2)
-    plot(test_set()$Total,predicted_test_set()$Predicted,
-         xlim = c(0,100),
-         ylim = c(0,100),
-         main = "Total Marks",
-         ylab = "Test Set Predicted",
-         xlab = "Test Set Actual",
-         lwd = 1.2)
   })
 
+  output$scatter_plot <- renderPlot({
+    plot(test_set()$Total,predicted_test_set()$Predicted,
+         #xlim = c(0,100),
+         #ylim = c(0,100),
+         main = "Test Set Total Marks",
+         ylab = "Predicted Mark",
+         xlab = "Actual Mark",
+         lwd = 1.2)
+  })
 
   output$tb <- renderUI({
     if(is.null(dataset()))
       h5("")
     else
-      tabsetPanel(
-        tabPanel(
-          "Predicted Total Marks",
-          tableOutput("predicted_y")
-        ),
-        tabPanel(
-          "Model Performance",
-          plotOutput("plots")
+      tabsetPanel(type = "pills",
+                  tabPanel(
+                    "Predicted Total Marks",
+                    tableOutput("predicted_y")
+                  ),
+                  tabPanel(
+                    "Model Summary",
+                    verbatimTextOutput("summary")),
+                  tabPanel(
+                    "Model Performance",
+                    plotOutput("scatter_plot"),
+                    plotOutput("error_plot"),
+                    plotOutput("rsquare_plot"),
+                    plotOutput("ncomp_plot"),
+                    tableOutput("RMSEPrediction"),
+                    tableOutput("predicted_test_set")
+                  )
 
-        )
-        # tabPanel(
-        #   "Model Performance on Test Data",
-        #   tableOutput("predicted_test_set"),
-        #   "Under Construction"
-        #   #tableOutput("SemGPA1")
-        #   ),
-        # tabPanel(
-        #   "Model Performance Graphs",
-        #   "Under Construction"
-        #   #tableOutput("SemGPA1")
-        # ),
-        # tabPanel(
-        #   "About",
-        #   h3("Predicted Total Marks - provides the predicted total marks out of 100
-        #   for each student as modelled by the machine learning which includes
-        #   the Final Marks with 20% weight only. Notes: (a) only students with
-        #   complete marks on each assessment will be fitted to the developed
-        #   model. (b) the download button below will provide a CSV file that will
-        #   include two additional columns as compared to the diplayed report on the
-        #   'Predicted Total Marks' tab. (i) COURSE WORK1 - this is supposed to be first assessment based on the
-        #   template found in sheet 'currentdata'. The purpose of this column on this
-        #   report is to compare the student ID and the marks they got in this column.
-        #   If it maches, then the predicted total mark is indeed assigned to that student, else,
-        #   please report it immidiately. You may or may not exerise to cross check the
-        #   prediction report based on this column.
-        #   (ii) RMSEP (error) - is the root mean square error
-        #   of prediction of the model that is fitted to your course. This is expected to vary from
-        #   one course to the other. Interestingly, the error  may even vary for the same course from one college to the other.
-        #   Acceptable error estimate will be decided by the concern authority. Upon getting an unacceptable range of error,
-        #   Report it at once.
-        #   "))
+                  # tabPanel(
+                  #   "Model Performance Graphs",
+                  #   "Under Construction"
+                  #   #tableOutput("SemGPA1")
+                  # ),
+                  # tabPanel(
+                  #   "About",
+                  #   h3("Predicted Total Marks - provides the predicted total marks out of 100
+                  #   for each student as modelled by the machine learning which includes
+                  #   the Final Marks with 20% weight only. Notes: (a) only students with
+                  #   complete marks on each assessment will be fitted to the developed
+                  #   model. (b) the download button below will provide a CSV file that will
+                  #   include two additional columns as compared to the diplayed report on the
+                  #   'Predicted Total Marks' tab. (i) COURSE WORK1 - this is supposed to be first assessment based on the
+                  #   template found in sheet 'currentdata'. The purpose of this column on this
+                  #   report is to compare the student ID and the marks they got in this column.
+                  #   If it maches, then the predicted total mark is indeed assigned to that student, else,
+                  #   please report it immidiately. You may or may not exerise to cross check the
+                  #   prediction report based on this column.
+                  #   (ii) RMSEP (error) - is the root mean square error
+                  #   of prediction of the model that is fitted to your course. This is expected to vary from
+                  #   one course to the other. Interestingly, the error  may even vary for the same course from one college to the other.
+                  #   Acceptable error estimate will be decided by the concern authority. Upon getting an unacceptable range of error,
+                  #   Report it at once.
+                  #   "))
       )
   })
 

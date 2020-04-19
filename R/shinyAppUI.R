@@ -6,7 +6,8 @@
 # create the shiny application user interface
 shinyAppUI <- fluidPage(
 
-  titlePanel("Total Marks Projection using Machine Learning for Colleges of Technology"),
+  titlePanel(title = "MoMp GPred19 Web App"),
+  windowTitle = "MoMp GPred19",
   sidebarLayout(
     sidebarPanel(
       fileInput("uploadedfile","Upload the file"),
@@ -14,7 +15,7 @@ shinyAppUI <- fluidPage(
                either XLS or XLSX extension file name on this web app.
                Prefered filename should be the
                student's ID number e.g. MATH1200.xlsx"),
-      uiOutput("templatexlsx"),
+      #uiOutput("templatexlsx"),
       br(),
       # helpText("Predicted Total Marks - provides the predicted total marks out of 100
       #          of each students as modelled by the machine learning which includes

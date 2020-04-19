@@ -1,15 +1,10 @@
 Package: GPred19
 Type: Package
-Title: Implements a demo shiny application inside a package
-Version: 0.1.0
-Author: Mark Sellors
-Maintainer: Mark Sellos <msellors@mango-solutions.com>
-Description: A small package that implements the 'geyser' shiny app inside a 
-    package.
-    The geyser shiny app is the small app provided by the RStudio IDE when you
-    click to create a new "Shiny Web App...".
-    In this package that shiny app has been broken up into parts as a
-    demonstration of how one might approach the packaging of such an app.
+Title: Total Marks Prediction using ML for CoTs
+Version: 0.1.1
+Author: Dr. Eduardo M. Lacap, Jr.
+Maintainer: Dr. Eduado M. Lacap, Jr. <eduardo.jr@hct.edu.om>
+Description: A web application on how to seamlessly implement the total marks prediction using machine learning.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -4,7 +4,7 @@
 #' @import shiny
 
 # create the shiny application user interface
-Eduardo <- fluidPage(
+shinyAppUI <- fluidPage(
 
   titlePanel(title = "MoMp GPred19 Web App"),
   windowTitle = "MoMp GPred19",

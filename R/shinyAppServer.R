@@ -6,7 +6,7 @@
 
 
 # Define server logic required to draw a histogram
-Lacap <- function(input, output) {
+shinyAppServer <- function(input, output) {
 
 
   #Data Pre-Processing for the old data####

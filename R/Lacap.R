@@ -6,7 +6,7 @@
 
 
 # Define server logic required to draw a histogram
-shinyAppServer <- function(input, output) {
+Lacap <- function(input, output) {
 
 
   #Data Pre-Processing for the old data####
@@ -163,7 +163,7 @@ shinyAppServer <- function(input, output) {
                      'Section No.'= newdata4[,4],
                      #'Course Work1'= newdata4[,5],
                      'Predicted Total Marks' = drop(predicted)
-                     #'RMSEP (error)' = error()
+                     #'RMSEC (error)' = error()
     )
   })
 
@@ -181,9 +181,83 @@ shinyAppServer <- function(input, output) {
                      'Section No.'= newdata4[,4],
                      'Course Work1'= newdata4[,5],
                      'Predicted Total Marks' = drop(predicted),
-                     'RMSEP (error)' = error()
+                     'RMSEC (error)' = error()
     )
   })
+
+  output$counter <-
+    renderText({
+      if (!file.exists("counter.Rdata"))
+        counter <- 0
+      else
+        load(file="counter.Rdata")
+      counter  <- counter + 1
+      save(counter, file="counter.Rdata")
+      paste("Counter: ", counter, " visits")
+    })
+
+  # trgdata <-
+  #   reactive({
+  #     if (!file.exists("trgset.rds"))
+  #       saveRDS(dataset(), "trgset.rds")
+  #     else
+  #       x = readRDS("trgset.rds")
+  #       y = rbind(x, dataset())
+  #     saveRDS(y, file="trgset.rds")
+  #     })
+
+  # observeEvent(input$uploadedfile, {
+  #
+  #   if (!file.exists("trgset.rds"))
+  #     saveRDS(dataset(), "trgset.rds")
+  #   else
+  #     x = as.data.frame(readRDS("trgset.rds"))
+  #     y = rbind(x, dataset())
+  #   saveRDS(y, file="trgset.rds")
+  #
+  # })
+
+  # saveData <<- function(data) {
+  #   data <- data
+  #   # Create a unique file name
+  #   fileName <- sprintf("%s_%s.csv", coursecode(), digest::digest(data))
+  #   # Write the file to the local system
+  #   write.csv(
+  #     x = data,
+  #     file = file.path(paste0(getwd(),"/datasets"), fileName),
+  #     row.names = FALSE
+  #   )
+  # }
+  saveDatatrg <<- function(data) {
+    data <- data
+    # Create a unique file name
+    fileName <- sprintf("%s_%s_%s.rds", coursecode(),"trng", digest::digest(data))
+    # Write the file to the local system
+    saveRDS(
+      data,
+      file = file.path(paste0(getwd(),"/trng"), fileName)
+    )
+  }
+
+  observeEvent(input$uploadedfile, {
+    saveDatatrg(dataset()[,-2])
+  })
+
+  saveDatapred <<- function(data) {
+    data <- data
+    # Create a unique file name
+    fileName <- sprintf("%s_%s_%s.rds", coursecode(),"pred", digest::digest(data))
+    # Write the file to the local system
+    saveRDS(
+      data,
+      file = file.path(paste0(getwd(),"/pred"), fileName)
+    )
+  }
+
+  observeEvent(input$uploadedfile, {
+    saveDatapred(predicted_total_marks2())
+  })
+
 
   output$predicted_total_marks_DL <- downloadHandler(
 
@@ -211,6 +285,15 @@ shinyAppServer <- function(input, output) {
            download="Grade Prediction Template.xlsx"
     )
   })
+
+  output$guidelines <- renderUI({
+    #req(credentials()$user_auth)
+    tags$a("Download Guidelines",
+           href="Guidlines for GPred19.pdf",
+           download="Guidlines for GPred19.pdf"
+    )
+  })
+
   output$predicted_y <- renderTable({
     if(is.null(dataset())){return()}
     predicted_total_marks()

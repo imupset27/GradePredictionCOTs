@@ -4,7 +4,7 @@
 #' @import shiny
 
 # create the shiny application user interface
-shinyAppUI <- fluidPage(
+Eduardo <- fluidPage(
 
   titlePanel(title = "MoMp GPred19 Web App"),
   windowTitle = "MoMp GPred19",
@@ -14,8 +14,8 @@ shinyAppUI <- fluidPage(
       helpText("Upload the Excel File template with
                either XLS or XLSX extension file name on this web app.
                Prefered filename should be the
-               student's ID number e.g. MATH1200.xlsx"),
-      #uiOutput("templatexlsx"),
+               Course Code e.g. MATH1200.xlsx"),
+      uiOutput("templatexlsx"),
       br(),
       # helpText("Predicted Total Marks - provides the predicted total marks out of 100
       #          of each students as modelled by the machine learning which includes
@@ -35,8 +35,13 @@ shinyAppUI <- fluidPage(
       #          Acceptable error estimate will be decided by the concern authority. Upon getting an unacceptable range of error,
       #          Report it at once.
       #          "),
-      downloadButton("predicted_total_marks_DL", "Predicted Total Marks")
-      # br(),
+      uiOutput("guidelines"),
+      br(),
+      downloadButton("predicted_total_marks_DL", "Predicted Total Marks"),
+      br(),
+      br(),
+
+      h5(textOutput("counter"))
       # helpText("Semester GPA1 is for a student who had at least
       #          one 'mixing status'  semester given that the lower
       #          level is not yet completed (e.g. in diploma second year,

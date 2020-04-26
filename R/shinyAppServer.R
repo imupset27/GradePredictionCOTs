@@ -228,31 +228,31 @@ shinyAppServer <- function(input, output) {
   #     row.names = FALSE
   #   )
   # }
-  saveDatatrg <<- function(data) {
-    data <- data
-    # Create a unique file name
-    fileName <- sprintf("%s_%s_%s.rds", coursecode(),"trng", digest::digest(data))
-    # Write the file to the local system
-    saveRDS(
-      data,
-      file = file.path(paste0(getwd(),"/trng"), fileName)
-    )
-  }
-
-  observeEvent(input$uploadedfile, {
-    saveDatatrg(dataset()[,-2])
-  })
-
-  saveDatapred <<- function(data) {
-    data <- data
-    # Create a unique file name
-    fileName <- sprintf("%s_%s_%s.rds", coursecode(),"pred", digest::digest(data))
-    # Write the file to the local system
-    saveRDS(
-      data,
-      file = file.path(paste0(getwd(),"/pred"), fileName)
-    )
-  }
+  # saveDatatrg <<- function(data) {
+  #   data <- data
+  #   # Create a unique file name
+  #   fileName <- sprintf("%s_%s_%s.rds", coursecode(),"trng", digest::digest(data))
+  #   # Write the file to the local system
+  #   saveRDS(
+  #     data,
+  #     file = file.path(paste0(getwd(),"/trng"), fileName)
+  #   )
+  # }
+  #
+  # observeEvent(input$uploadedfile, {
+  #   saveDatatrg(dataset()[,-2])
+  # })
+  #
+  # saveDatapred <<- function(data) {
+  #   data <- data
+  #   # Create a unique file name
+  #   fileName <- sprintf("%s_%s_%s.rds", coursecode(),"pred", digest::digest(data))
+  #   # Write the file to the local system
+  #   saveRDS(
+  #     data,
+  #     file = file.path(paste0(getwd(),"/pred"), fileName)
+  #   )
+  # }
 
   observeEvent(input$uploadedfile, {
     saveDatapred(predicted_total_marks2())

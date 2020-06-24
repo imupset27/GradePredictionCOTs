@@ -4,5 +4,5 @@
 ## Installation
 
 ``` r
-devtools::install_github("imupset27/GradePredictionCOTs")
+devtools::install_github("imupset27/GradePredictionCoTs")
 ```

@@ -2,8 +2,8 @@ Package: GPred19
 Type: Package
 Title: Total Marks Prediction using ML for CoTs
 Version: 0.1.1
-Author: Dr. Eduardo M. Lacap, Jr.
-Maintainer: Dr. Eduado M. Lacap, Jr. <eduardo.jr@hct.edu.om>
+Author: Dr. 
+Maintainer: Dr. 
 Description: A web application on how to seamlessly implement the total marks prediction using machine learning.
 License: MIT + file LICENSE
 Encoding: UTF-8
